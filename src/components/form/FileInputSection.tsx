@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PackagingData } from '@/lib/schema';
+import { JsonifyData } from '@/lib/schema';
 import { FormSection } from './FormSection';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Folder } from 'lucide-react';
 
 interface FileInputSectionProps {
-  form: UseFormReturn<PackagingData>;
+  form: UseFormReturn<JsonifyData>;
 }
 
 export function FileInputSection({ form }: FileInputSectionProps) {
@@ -58,28 +58,52 @@ export function FileInputSection({ form }: FileInputSectionProps) {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="installCmd">Install Command</Label>
+            <Label htmlFor="installcmd">Install Command</Label>
             <Input
-              id="installCmd"
+              id="installcmd"
               placeholder="Install command"
-              {...register('installCmd')}
-              className={errors.installCmd ? 'border-destructive' : ''}
+              {...register('installcmd')}
+              className={errors.installcmd ? 'border-destructive' : ''}
             />
-            {errors.installCmd && (
-              <p className="text-sm text-destructive">{errors.installCmd.message}</p>
+            {errors.installcmd && (
+              <p className="text-sm text-destructive">{errors.installcmd.message}</p>
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="uninstallCmd">Uninstall Command</Label>
+            <Label htmlFor="uninstallcmd">Uninstall Command</Label>
             <Input
-              id="uninstallCmd"
+              id="uninstallcmd"
               placeholder="Uninstall command"
-              {...register('uninstallCmd')}
-              className={errors.uninstallCmd ? 'border-destructive' : ''}
+              {...register('uninstallcmd')}
+              className={errors.uninstallcmd ? 'border-destructive' : ''}
             />
-            {errors.uninstallCmd && (
-              <p className="text-sm text-destructive">{errors.uninstallCmd.message}</p>
+            {errors.uninstallcmd && (
+              <p className="text-sm text-destructive">{errors.uninstallcmd.message}</p>
             )}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="checkver">Check Version</Label>
+            <div className="space-y-2">
+              <Input
+                placeholder="URL"
+                {...register('checkver.url')}
+              />
+              <Input
+                placeholder="Regex pattern"
+                {...register('checkver.regex')}
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="autoupdate">Auto Update</Label>
+            <Input
+              placeholder="Update URL"
+              {...register('autoupdate.url')}
+            />
           </div>
         </div>
       </div>

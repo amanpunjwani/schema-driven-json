@@ -1,19 +1,19 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PackagingData } from '@/lib/schema';
+import { JsonifyData } from '@/lib/schema';
 import { FormSection } from './FormSection';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface GeneralSectionProps {
-  form: UseFormReturn<PackagingData>;
+  form: UseFormReturn<JsonifyData>;
 }
 
 export function GeneralSection({ form }: GeneralSectionProps) {
   const { register, setValue, watch, formState: { errors } } = form;
   
-  const actualFileVersion = watch('actualFileVersion');
+  const actualFileVersion = watch('actualfileversion');
 
   return (
     <FormSection title="General">
@@ -31,15 +31,15 @@ export function GeneralSection({ form }: GeneralSectionProps) {
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="bundleId">Bundle ID</Label>
+          <Label htmlFor="bundleid">Bundle ID</Label>
           <Input
-            id="bundleId"
+            id="bundleid"
             placeholder="com.example.app"
-            {...register('bundleId')}
-            className={errors.bundleId ? 'border-destructive' : ''}
+            {...register('bundleid')}
+            className={errors.bundleid ? 'border-destructive' : ''}
           />
-          {errors.bundleId && (
-            <p className="text-sm text-destructive">{errors.bundleId.message}</p>
+          {errors.bundleid && (
+            <p className="text-sm text-destructive">{errors.bundleid.message}</p>
           )}
         </div>
       </div>
@@ -57,8 +57,8 @@ export function GeneralSection({ form }: GeneralSectionProps) {
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="actualFileVersion">Actual File Version</Label>
-          <Select value={actualFileVersion} onValueChange={(value) => setValue('actualFileVersion', value as any)}>
+          <Label htmlFor="actualfileversion">Actual File Version</Label>
+          <Select value={actualFileVersion} onValueChange={(value) => setValue('actualfileversion', value as any)}>
             <SelectTrigger>
               <SelectValue placeholder="Select version format" />
             </SelectTrigger>
@@ -69,8 +69,8 @@ export function GeneralSection({ form }: GeneralSectionProps) {
               <SelectItem value="cleanv">cleanv</SelectItem>
             </SelectContent>
           </Select>
-          {errors.actualFileVersion && (
-            <p className="text-sm text-destructive">{errors.actualFileVersion.message}</p>
+          {errors.actualfileversion && (
+            <p className="text-sm text-destructive">{errors.actualfileversion.message}</p>
           )}
         </div>
       </div>

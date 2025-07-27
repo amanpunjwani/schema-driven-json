@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PackagingData } from '@/lib/schema';
+import { JsonifyData } from '@/lib/schema';
 import { FormSection } from './FormSection';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
 interface FilesOptionsSectionProps {
-  form: UseFormReturn<PackagingData>;
+  form: UseFormReturn<JsonifyData>;
 }
 
 export function FilesOptionsSection({ form }: FilesOptionsSectionProps) {

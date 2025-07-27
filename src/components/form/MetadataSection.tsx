@@ -1,13 +1,13 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PackagingData } from '@/lib/schema';
+import { JsonifyData } from '@/lib/schema';
 import { FormSection } from './FormSection';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 interface MetadataSectionProps {
-  form: UseFormReturn<PackagingData>;
+  form: UseFormReturn<JsonifyData>;
 }
 
 export function MetadataSection({ form }: MetadataSectionProps) {

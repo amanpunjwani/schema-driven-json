@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { PackagingData } from '@/lib/schema';
+import { JsonifyData } from '@/lib/schema';
 import { FormSection } from './FormSection';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,17 +10,17 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
 interface DeploymentOptionsSectionProps {
-  form: UseFormReturn<PackagingData>;
+  form: UseFormReturn<JsonifyData>;
 }
 
 export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps) {
   const { register, setValue, watch, formState: { errors } } = form;
   
-  const installContext = watch('deploymentOptions.HowToInstall.InstallContext');
-  const adminPrivileges = watch('deploymentOptions.HowToInstall.AdminPrivileges');
-  const deviceRestart = watch('deploymentOptions.HowToInstall.DeviceRestart');
-  const identifyBy = watch('deploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy');
-  const dataContingencies = watch('deploymentOptions.WhenToInstall.DataContingencies');
+  const installContext = watch('DeploymentOptions.HowToInstall.InstallContext');
+  const adminPrivileges = watch('DeploymentOptions.HowToInstall.AdminPrivileges');
+  const deviceRestart = watch('DeploymentOptions.HowToInstall.DeviceRestart');
+  const identifyBy = watch('DeploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy');
+  const dataContingencies = watch('DeploymentOptions.WhenToInstall.DataContingincies');
 
   return (
     <FormSection title="Deployment Options">
@@ -47,7 +47,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                 <Input
                   id="diskSpace"
                   type="number"
-                  {...register('deploymentOptions.WhenToInstall.DiskSpaceRequiredInKb', { valueAsNumber: true })}
+                  {...register('DeploymentOptions.WhenToInstall.DiskSpaceRequiredInKb', { valueAsNumber: true })}
                 />
               </div>
               <div className="space-y-2">
@@ -57,7 +57,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                   type="number"
                   min="1"
                   max="100"
-                  {...register('deploymentOptions.WhenToInstall.DevicePowerRequired', { valueAsNumber: true })}
+                  {...register('DeploymentOptions.WhenToInstall.DevicePowerRequired', { valueAsNumber: true })}
                 />
               </div>
             </div>
@@ -67,7 +67,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
               <Input
                 id="ramRequired"
                 type="number"
-                {...register('deploymentOptions.WhenToInstall.RamRequiredInMb', { valueAsNumber: true })}
+                {...register('DeploymentOptions.WhenToInstall.RamRequireedInMb', { valueAsNumber: true })}
               />
             </div>
           </div>
@@ -79,7 +79,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Install Context</Label>
-                <Select value={installContext} onValueChange={(value) => setValue('deploymentOptions.HowToInstall.InstallContext', value as any)}>
+                <Select value={installContext} onValueChange={(value) => setValue('DeploymentOptions.HowToInstall.InstallContext', value as any)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -91,7 +91,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
               </div>
               <div className="space-y-2">
                 <Label>Device Restart</Label>
-                <Select value={deviceRestart} onValueChange={(value) => setValue('deploymentOptions.HowToInstall.DeviceRestart', value as any)}>
+                <Select value={deviceRestart} onValueChange={(value) => setValue('DeploymentOptions.HowToInstall.DeviceRestart', value as any)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -108,7 +108,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
               <Label htmlFor="installCommand">Install Command</Label>
               <Input
                 id="installCommand"
-                {...register('deploymentOptions.HowToInstall.InstallCommand')}
+                {...register('DeploymentOptions.HowToInstall.InstallCommand')}
               />
             </div>
 
@@ -116,7 +116,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
               <Switch
                 id="adminPrivileges"
                 checked={adminPrivileges}
-                onCheckedChange={(checked) => setValue('deploymentOptions.HowToInstall.AdminPrivileges', checked)}
+                onCheckedChange={(checked) => setValue('DeploymentOptions.HowToInstall.AdminPrivileges', checked)}
               />
               <Label htmlFor="adminPrivileges">Admin Privileges Required</Label>
             </div>
@@ -129,7 +129,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                   type="number"
                   min="1"
                   max="10"
-                  {...register('deploymentOptions.HowToInstall.RetryCount', { valueAsNumber: true })}
+                  {...register('DeploymentOptions.HowToInstall.RetryCount', { valueAsNumber: true })}
                 />
               </div>
               <div className="space-y-2">
@@ -139,7 +139,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                   type="number"
                   min="1"
                   max="10"
-                  {...register('deploymentOptions.HowToInstall.RetryIntervalInMinutes', { valueAsNumber: true })}
+                  {...register('DeploymentOptions.HowToInstall.RetryIntervalInMinutes', { valueAsNumber: true })}
                 />
               </div>
               <div className="space-y-2">
@@ -147,7 +147,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                 <Input
                   id="installTimeout"
                   type="number"
-                  {...register('deploymentOptions.HowToInstall.InstallTimeoutInMinutes', { valueAsNumber: true })}
+                  {...register('DeploymentOptions.HowToInstall.InstallTimeoutInMinutes', { valueAsNumber: true })}
                 />
               </div>
             </div>
@@ -157,14 +157,14 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                 <Label htmlFor="rebootExitCode">Installer Reboot Exit Code</Label>
                 <Input
                   id="rebootExitCode"
-                  {...register('deploymentOptions.HowToInstall.InstallerRebootExitCode')}
+                  {...register('DeploymentOptions.HowToInstall.InstallerRebootExitCode')}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="successExitCode">Installer Success Exit Code</Label>
                 <Input
                   id="successExitCode"
-                  {...register('deploymentOptions.HowToInstall.InstallerSuccessExitCode')}
+                  {...register('DeploymentOptions.HowToInstall.InstallerSuccessExitCode')}
                 />
               </div>
             </div>
@@ -176,7 +176,7 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Identify Application By</Label>
-              <Select value={identifyBy} onValueChange={(value) => setValue('deploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy', value as any)}>
+              <Select value={identifyBy} onValueChange={(value) => setValue('DeploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy', value as any)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -192,8 +192,8 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="useAdditionalCriteria"
-                    checked={watch('deploymentOptions.WhenToCallInstallComplete.UseAdditionalCriteria')}
-                    onCheckedChange={(checked) => setValue('deploymentOptions.WhenToCallInstallComplete.UseAdditionalCriteria', checked)}
+                    checked={watch('DeploymentOptions.WhenToCallInstallComplete.UseAdditionalCriteria')}
+                    onCheckedChange={(checked) => setValue('DeploymentOptions.WhenToCallInstallComplete.UseAdditionalCriteria', checked)}
                   />
                   <Label htmlFor="useAdditionalCriteria">Use Additional Criteria</Label>
                 </div>

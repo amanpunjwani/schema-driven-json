@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PackagingSchema, type PackagingData } from '@/lib/schema';
+import { JsonifySchema, type JsonifyData } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
 import { Download, Upload, Save, Copy, Code2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -12,17 +12,17 @@ import { FileInputSection } from './form/FileInputSection';
 import { DeploymentOptionsSection } from './form/DeploymentOptionsSection';
 import { FilesOptionsSection } from './form/FilesOptionsSection';
 
-const defaultValues: Partial<PackagingData> = {
+const defaultValues: Partial<JsonifyData> = {
   name: '',
-  bundleId: '',
+  bundleid: '',
   version: '1.0.0',
-  actualFileVersion: 'version',
-  deploymentOptions: {
+  actualfileversion: 'version',
+  DeploymentOptions: {
     WhenToInstall: {
-      DataContingencies: [],
+      DataContingincies: [],
       DiskSpaceRequiredInKb: 0,
       DevicePowerRequired: 50,
-      RamRequiredInMb: 512,
+      RamRequireedInMb: 512,
     },
     HowToInstall: {
       InstallContext: 'Device',
@@ -38,7 +38,6 @@ const defaultValues: Partial<PackagingData> = {
     WhenToCallInstallComplete: {
       IdentifyApplicationBy: 'DefiningCriteria',
       UseAdditionalCriteria: false,
-      DefiningCriteria: [],
     }
   },
   FilesOptions: {
@@ -55,8 +54,8 @@ export function JSONEditor() {
   const { toast } = useToast();
   const [jsonPreview, setJsonPreview] = useState('{}');
   
-  const form = useForm<PackagingData>({
-    resolver: zodResolver(PackagingSchema),
+  const form = useForm<JsonifyData>({
+    resolver: zodResolver(JsonifySchema),
     defaultValues,
     mode: 'onChange'
   });
@@ -114,7 +113,7 @@ export function JSONEditor() {
   const handleExportJSON = () => {
     try {
       const data = form.getValues();
-      PackagingSchema.parse(data); // Validate before export
+      JsonifySchema.parse(data); // Validate before export
       
       const blob = new Blob([JSON.stringify(data, null, 2)], { 
         type: 'application/json' 

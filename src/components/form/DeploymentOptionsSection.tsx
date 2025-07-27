@@ -7,20 +7,99 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 interface DeploymentOptionsSectionProps {
   form: UseFormReturn<JsonifyData>;
 }
 
 export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps) {
-  const { register, setValue, watch, formState: { errors } } = form;
+  const { register, setValue, watch, getValues, formState: { errors } } = form;
   
   const installContext = watch('DeploymentOptions.HowToInstall.InstallContext');
   const adminPrivileges = watch('DeploymentOptions.HowToInstall.AdminPrivileges');
   const deviceRestart = watch('DeploymentOptions.HowToInstall.DeviceRestart');
   const identifyBy = watch('DeploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy');
   const dataContingencies = watch('DeploymentOptions.WhenToInstall.DataContingincies');
+  const definingCriteria = watch('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+
+  const addCriteria = () => {
+    const newCriteria = {
+      CriteriaType: 'AppExists' as const,
+      LogicalCondition: 'End' as const,
+      AppCriteria: {
+        ApplicationIdentifier: '',
+        VersionCondition: 'Any' as const,
+        MajorVersion: 0,
+        MinorVersion: 0,
+        RevisionNumber: 0,
+        BuildNumber: 0,
+      }
+    };
+    
+    const currentCriteria = getValues('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+    setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList', [...currentCriteria, newCriteria]);
+  };
+
+  const removeCriteria = (index: number) => {
+    const currentCriteria = getValues('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+    const updated = currentCriteria.filter((_, i) => i !== index);
+    setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList', updated);
+  };
+
+  const updateCriteriaType = (index: number, criteriaType: 'AppExists' | 'FileExists' | 'RegistryExists') => {
+    const currentCriteria = getValues('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+    const updated = [...currentCriteria];
+    
+    // Reset the criteria object based on type
+    if (criteriaType === 'AppExists') {
+      updated[index] = {
+        ...updated[index],
+        CriteriaType: criteriaType,
+        AppCriteria: {
+          ApplicationIdentifier: '',
+          VersionCondition: 'Any' as const,
+          MajorVersion: 0,
+          MinorVersion: 0,
+          RevisionNumber: 0,
+          BuildNumber: 0,
+        },
+        FileCriteria: undefined,
+        RegistryCriteria: undefined,
+      };
+    } else if (criteriaType === 'FileExists') {
+      updated[index] = {
+        ...updated[index],
+        CriteriaType: criteriaType,
+        FileCriteria: {
+          Path: '',
+          VersionCondition: '',
+          MajorVersion: 0,
+          MinorVersion: 0,
+          RevisionNumber: 0,
+          BuildNumber: 0,
+          ModifiedOn: '',
+        },
+        AppCriteria: undefined,
+        RegistryCriteria: undefined,
+      };
+    } else if (criteriaType === 'RegistryExists') {
+      updated[index] = {
+        ...updated[index],
+        CriteriaType: criteriaType,
+        RegistryCriteria: {
+          Path: '',
+          KeyName: '',
+          KeyType: 'String' as const,
+          KeyValue: '',
+        },
+        AppCriteria: undefined,
+        FileCriteria: undefined,
+      };
+    }
+    
+    setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList', updated);
+  };
 
   return (
     <FormSection title="Deployment Options">
@@ -200,13 +279,266 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                 
                 <div className="space-y-2">
                   <Label>Defining Criteria</Label>
-                  <div className="text-sm text-muted-foreground">
-                    No criteria added yet
+                  <div className="space-y-4">
+                    {definingCriteria.map((criteria, index) => (
+                      <div key={index} className="border rounded-lg p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label>Criteria #{index + 1}</Label>
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => removeCriteria(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>Criteria Type</Label>
+                            <Select 
+                              value={criteria.CriteriaType} 
+                              onValueChange={(value) => updateCriteriaType(index, value as any)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="AppExists">App Exists</SelectItem>
+                                <SelectItem value="FileExists">File Exists</SelectItem>
+                                <SelectItem value="RegistryExists">Registry Exists</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label>Logical Condition</Label>
+                            <Select 
+                              value={criteria.LogicalCondition} 
+                              onValueChange={(value) => {
+                                const currentCriteria = getValues('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+                                const updated = [...currentCriteria];
+                                updated[index].LogicalCondition = value as any;
+                                setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList', updated);
+                              }}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="End">End</SelectItem>
+                                <SelectItem value="And">And</SelectItem>
+                                <SelectItem value="Or">Or</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        {/* App Criteria */}
+                        {criteria.CriteriaType === 'AppExists' && (
+                          <div className="space-y-4 pl-4 border-l-2 border-muted">
+                            <div className="space-y-2">
+                              <Label>Application Identifier</Label>
+                              <Input
+                                {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.AppCriteria.ApplicationIdentifier`)}
+                                placeholder="com.example.app"
+                              />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Version Condition</Label>
+                                <Select 
+                                  value={criteria.AppCriteria?.VersionCondition} 
+                                  onValueChange={(value) => {
+                                    const currentCriteria = getValues('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+                                    const updated = [...currentCriteria];
+                                    if (updated[index].AppCriteria) {
+                                      updated[index].AppCriteria.VersionCondition = value as any;
+                                    }
+                                    setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList', updated);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Any">Any</SelectItem>
+                                    <SelectItem value="EqualTo">Equal To</SelectItem>
+                                    <SelectItem value="NotEqualTo">Not Equal To</SelectItem>
+                                    <SelectItem value="GreaterThan">Greater Than</SelectItem>
+                                    <SelectItem value="GreaterThanOrEqualTo">Greater Than or Equal To</SelectItem>
+                                    <SelectItem value="LessThanOrEqualTo">Less Than or Equal To</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-4 gap-4">
+                              <div className="space-y-2">
+                                <Label>Major Version</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.AppCriteria.MajorVersion`, { valueAsNumber: true })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Minor Version</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.AppCriteria.MinorVersion`, { valueAsNumber: true })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Revision Number</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.AppCriteria.RevisionNumber`, { valueAsNumber: true })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Build Number</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.AppCriteria.BuildNumber`, { valueAsNumber: true })}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* File Criteria */}
+                        {criteria.CriteriaType === 'FileExists' && (
+                          <div className="space-y-4 pl-4 border-l-2 border-muted">
+                            <div className="space-y-2">
+                              <Label>File Path</Label>
+                              <Input
+                                {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.Path`)}
+                                placeholder="C:\Program Files\App\app.exe"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Version Condition</Label>
+                              <Input
+                                {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.VersionCondition`)}
+                                placeholder="Version condition"
+                              />
+                            </div>
+                            
+                            <div className="grid grid-cols-4 gap-4">
+                              <div className="space-y-2">
+                                <Label>Major Version</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.MajorVersion`, { valueAsNumber: true })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Minor Version</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.MinorVersion`, { valueAsNumber: true })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Revision Number</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.RevisionNumber`, { valueAsNumber: true })}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Build Number</Label>
+                                <Input
+                                  type="number"
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.BuildNumber`, { valueAsNumber: true })}
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Modified On</Label>
+                              <Input
+                                {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.FileCriteria.ModifiedOn`)}
+                                placeholder="YYYY-MM-DD"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Registry Criteria */}
+                        {criteria.CriteriaType === 'RegistryExists' && (
+                          <div className="space-y-4 pl-4 border-l-2 border-muted">
+                            <div className="space-y-2">
+                              <Label>Registry Path</Label>
+                              <Input
+                                {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.RegistryCriteria.Path`)}
+                                placeholder="HKEY_LOCAL_MACHINE\SOFTWARE\..."
+                              />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Key Name</Label>
+                                <Input
+                                  {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.RegistryCriteria.KeyName`)}
+                                  placeholder="Version"
+                                />
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label>Key Type</Label>
+                                <Select 
+                                  value={criteria.RegistryCriteria?.KeyType} 
+                                  onValueChange={(value) => {
+                                    const currentCriteria = getValues('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList') || [];
+                                    const updated = [...currentCriteria];
+                                    if (updated[index].RegistryCriteria) {
+                                      updated[index].RegistryCriteria.KeyType = value as any;
+                                    }
+                                    setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList', updated);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="String">String</SelectItem>
+                                    <SelectItem value="Binary">Binary</SelectItem>
+                                    <SelectItem value="DWord">DWord</SelectItem>
+                                    <SelectItem value="Qword">Qword</SelectItem>
+                                    <SelectItem value="MultiString">MultiString</SelectItem>
+                                    <SelectItem value="ExpandableString">ExpandableString</SelectItem>
+                                    <SelectItem value="Version">Version</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Key Value</Label>
+                              <Input
+                                {...register(`DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria.CriteriaList.${index}.RegistryCriteria.KeyValue`)}
+                                placeholder="Expected value"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={addCriteria}
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add Criteria
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Criteria
-                  </Button>
                 </div>
               </div>
             )}

@@ -255,7 +255,18 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Identify Application By</Label>
-              <Select value={identifyBy} onValueChange={(value) => setValue('DeploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy', value as any)}>
+              <Select 
+                value={identifyBy} 
+                onValueChange={(value) => {
+                  setValue('DeploymentOptions.WhenToCallInstallComplete.IdentifyApplicationBy', value as any);
+                  // Clear the opposite field when switching
+                  if (value === 'DefiningCriteria') {
+                    setValue('DeploymentOptions.WhenToCallInstallComplete.CustomScript', undefined);
+                  } else if (value === 'UseCustomScript') {
+                    setValue('DeploymentOptions.WhenToCallInstallComplete.DefiningCriteria', undefined);
+                  }
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

@@ -12,8 +12,15 @@ interface FileInputSectionProps {
 }
 
 export function FileInputSection({ form }: FileInputSectionProps) {
-  const { register, formState: { errors } } = form;
+  const { register, formState: { errors }, setValue } = form;
   const [isBinary, setIsBinary] = React.useState(true);
+
+  const handleBinaryChange = (checked: boolean) => {
+    setIsBinary(checked);
+    if (!checked) {
+      setValue('file', undefined);
+    }
+  };
 
   return (
     <FormSection title="File Input">
@@ -22,26 +29,28 @@ export function FileInputSection({ form }: FileInputSectionProps) {
           <Switch
             id="binary"
             checked={isBinary}
-            onCheckedChange={setIsBinary}
+            onCheckedChange={handleBinaryChange}
           />
           <Label htmlFor="binary">Binary</Label>
         </div>
         
-        <div className="space-y-2">
-          <Label htmlFor="file">File Location</Label>
-          <div className="flex items-center space-x-2">
-            <Input
-              id="file"
-              placeholder="/path/to/file"
-              {...register('file')}
-              className={errors.file ? 'border-destructive' : ''}
-            />
-            <Folder className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground" />
+        {isBinary && (
+          <div className="space-y-2">
+            <Label htmlFor="file">File Location</Label>
+            <div className="flex items-center space-x-2">
+              <Input
+                id="file"
+                placeholder="/path/to/file"
+                {...register('file')}
+                className={errors.file ? 'border-destructive' : ''}
+              />
+              <Folder className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground" />
+            </div>
+            {errors.file && (
+              <p className="text-sm text-destructive">{errors.file.message}</p>
+            )}
           </div>
-          {errors.file && (
-            <p className="text-sm text-destructive">{errors.file.message}</p>
-          )}
-        </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="url">Download URL</Label>

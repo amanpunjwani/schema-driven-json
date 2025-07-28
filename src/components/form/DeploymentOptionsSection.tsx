@@ -542,6 +542,56 @@ export function DeploymentOptionsSection({ form }: DeploymentOptionsSectionProps
                 </div>
               </div>
             )}
+
+            {identifyBy === 'UseCustomScript' && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Script Type</Label>
+                  <Select 
+                    value={watch('DeploymentOptions.WhenToCallInstallComplete.CustomScript.ScriptType')} 
+                    onValueChange={(value) => setValue('DeploymentOptions.WhenToCallInstallComplete.CustomScript.ScriptType', value as any)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select script type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="JScript">JScript</SelectItem>
+                      <SelectItem value="PowerShell">PowerShell</SelectItem>
+                      <SelectItem value="VBScript">VBScript</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="commandToRunScript">Command To Run Script</Label>
+                  <Input
+                    id="commandToRunScript"
+                    {...register('DeploymentOptions.WhenToCallInstallComplete.CustomScript.CommandToRunScript')}
+                    placeholder="powershell.exe -ExecutionPolicy Bypass -File script.ps1"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="customScriptFileBlobId">Custom Script File Blob ID</Label>
+                  <Input
+                    id="customScriptFileBlobId"
+                    type="number"
+                    {...register('DeploymentOptions.WhenToCallInstallComplete.CustomScript.CustomScriptFileBlobId', { valueAsNumber: true })}
+                    placeholder="12345"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="successExitCodeScript">Success Exit Code</Label>
+                  <Input
+                    id="successExitCodeScript"
+                    type="number"
+                    {...register('DeploymentOptions.WhenToCallInstallComplete.CustomScript.SuccessExitCode', { valueAsNumber: true })}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </FormSection>
       </div>

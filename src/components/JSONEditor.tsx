@@ -64,13 +64,7 @@ export function JSONEditor() {
 
   React.useEffect(() => {
     try {
-      // Filter out empty file values
-      const filteredValues = { ...watchedValues };
-      if (!filteredValues.file || filteredValues.file === '') {
-        delete filteredValues.file;
-      }
-      
-      const formattedJson = JSON.stringify(filteredValues, null, 2);
+      const formattedJson = JSON.stringify(watchedValues, null, 2);
       setJsonPreview(formattedJson);
     } catch (error) {
       setJsonPreview('// Invalid JSON data');

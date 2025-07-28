@@ -12,13 +12,17 @@ interface FileInputSectionProps {
 }
 
 export function FileInputSection({ form }: FileInputSectionProps) {
-  const { register, formState: { errors }, setValue, watch } = form;
+  const { register, formState: { errors }, setValue, unregister } = form;
   const [isBinary, setIsBinary] = React.useState(false);
 
   const handleBinaryChange = (checked: boolean) => {
     setIsBinary(checked);
-    if (!checked) {
+    if (checked) {
+      // Register the field when binary is enabled
       setValue('file', '');
+    } else {
+      // Remove the field completely when binary is disabled
+      unregister('file');
     }
   };
 

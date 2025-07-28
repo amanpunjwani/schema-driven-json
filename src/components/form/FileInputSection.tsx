@@ -34,23 +34,25 @@ export function FileInputSection({ form }: FileInputSectionProps) {
           <Label htmlFor="binary">Binary</Label>
         </div>
         
-        {isBinary && (
-          <div className="space-y-2">
-            <Label htmlFor="file">File Location</Label>
-            <div className="flex items-center space-x-2">
-              <Input
-                id="file"
-                placeholder="/path/to/file"
-                {...register('file')}
-                className={errors.file ? 'border-destructive' : ''}
-              />
-              <Folder className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground" />
-            </div>
-            {errors.file && (
-              <p className="text-sm text-destructive">{errors.file.message}</p>
-            )}
+        <div className="space-y-2">
+          <Label htmlFor="file">File Location</Label>
+          <div className="flex items-center space-x-2">
+            <Input
+              id="file"
+              placeholder="/path/to/file"
+              {...register('file')}
+              className={errors.file ? 'border-destructive' : ''}
+              style={{ display: isBinary ? 'block' : 'none' }}
+            />
+            <Folder 
+              className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground" 
+              style={{ display: isBinary ? 'block' : 'none' }}
+            />
           </div>
-        )}
+          {errors.file && isBinary && (
+            <p className="text-sm text-destructive">{errors.file.message}</p>
+          )}
+        </div>
 
         <div className="space-y-2">
           <Label htmlFor="url">Download URL</Label>

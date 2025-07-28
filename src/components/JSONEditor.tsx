@@ -64,7 +64,15 @@ export function JSONEditor() {
 
   React.useEffect(() => {
     try {
-      const formattedJson = JSON.stringify(watchedValues, null, 2);
+      // Reorder fields to show description through autoupdate above DeploymentOptions
+      const { DeploymentOptions, FilesOptions, ...otherFields } = watchedValues;
+      const reorderedValues = {
+        ...otherFields,
+        DeploymentOptions,
+        FilesOptions
+      };
+      
+      const formattedJson = JSON.stringify(reorderedValues, null, 2);
       setJsonPreview(formattedJson);
     } catch (error) {
       setJsonPreview('// Invalid JSON data');

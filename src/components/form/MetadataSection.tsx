@@ -5,13 +5,14 @@ import { FormSection } from './FormSection';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 
 interface MetadataSectionProps {
   form: UseFormReturn<JsonifyData>;
 }
 
 export function MetadataSection({ form }: MetadataSectionProps) {
-  const { register, formState: { errors } } = form;
+  const { register, setValue, watch, unregister, formState: { errors } } = form;
 
   return (
     <FormSection title="Metadata">
@@ -64,6 +65,38 @@ export function MetadataSection({ form }: MetadataSectionProps) {
           />
           {errors.docs && (
             <p className="text-sm text-destructive">{errors.docs.message}</p>
+          )}
+        </div>
+        
+        <div className="space-y-4 mt-6">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="metadata-binary"
+              checked={!!watch('file')}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  setValue('file', '');
+                } else {
+                  unregister('file');
+                }
+              }}
+            />
+            <Label htmlFor="metadata-binary">Binary</Label>
+          </div>
+
+          {watch('file') !== undefined && (
+            <div className="space-y-2">
+              <Label htmlFor="file">File Address</Label>
+              <Input
+                id="file"
+                placeholder="/path/to/file"
+                {...register('file')}
+                className={errors.file ? 'border-destructive' : ''}
+              />
+              {errors.file && (
+                <p className="text-sm text-destructive">{errors.file.message}</p>
+              )}
+            </div>
           )}
         </div>
       </div>

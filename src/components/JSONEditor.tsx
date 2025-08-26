@@ -54,9 +54,19 @@ export function JSONEditor() {
   const { toast } = useToast();
   const [jsonPreview, setJsonPreview] = useState('{}');
   
+  // Load saved draft from localStorage
+  const getSavedDraft = () => {
+    try {
+      const saved = localStorage.getItem('jsonify-draft');
+      return saved ? JSON.parse(saved) : defaultValues;
+    } catch {
+      return defaultValues;
+    }
+  };
+  
   const form = useForm<JsonifyData>({
     resolver: zodResolver(JsonifySchema),
-    defaultValues,
+    defaultValues: getSavedDraft(),
     mode: 'onChange'
   });
 

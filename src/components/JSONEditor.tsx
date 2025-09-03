@@ -178,24 +178,29 @@ export function JSONEditor() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
       {/* Header */}
-      <div className="border-b bg-card px-6 py-4">
+      <div className="border-b bg-card/80 backdrop-blur-sm shadow-sm px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Code2 className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-semibold">JSONify</h1>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Code2 className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold text-foreground">JSONify</h1>
+              <p className="text-sm text-muted-foreground">Package Configuration Generator</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleLoadJSON}>
+            <Button variant="outline" size="sm" onClick={handleLoadJSON} className="bg-background/50">
               <Upload className="h-4 w-4 mr-2" />
               Load JSON
             </Button>
-            <Button variant="outline" size="sm" onClick={handleSaveDraft}>
+            <Button variant="outline" size="sm" onClick={handleSaveDraft} className="bg-background/50">
               <Save className="h-4 w-4 mr-2" />
               Save Draft
             </Button>
-            <Button size="sm" onClick={handleExportJSON}>
+            <Button size="sm" onClick={handleExportJSON} className="shadow-lg">
               <Download className="h-4 w-4 mr-2" />
               Export JSON
             </Button>
@@ -203,37 +208,46 @@ export function JSONEditor() {
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex h-[calc(100vh-88px)]">
         {/* Form Panel */}
-        <div className="w-1/2 border-r bg-card">
-          <div className="p-6 space-y-6 max-h-screen overflow-y-auto">
-            <GeneralSection form={form} />
-            <MetadataSection form={form} />
-            <FileInputSection form={form} />
-            <DeploymentOptionsSection form={form} />
-            <FilesOptionsSection form={form} />
+        <div className="w-1/2 border-r bg-card/50 backdrop-blur-sm">
+          <div className="h-full overflow-y-auto">
+            <div className="p-6 space-y-6">
+              <GeneralSection form={form} />
+              <MetadataSection form={form} />
+              <FileInputSection form={form} />
+              <DeploymentOptionsSection form={form} />
+              <FilesOptionsSection form={form} />
+            </div>
           </div>
         </div>
 
         {/* JSON Preview Panel */}
-        <div className="w-1/2 bg-muted/30">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">JSON Preview</h2>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={handleCopyJSON}>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleFormat}>
-                  <Code2 className="h-4 w-4 mr-2" />
-                  Format
-                </Button>
+        <div className="w-1/2 bg-gradient-to-b from-muted/30 to-muted/50">
+          <div className="h-full flex flex-col">
+            <div className="p-6 border-b bg-card/30 backdrop-blur-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <h2 className="text-lg font-semibold text-foreground">JSON Preview</h2>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={handleCopyJSON} className="bg-background/50">
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleFormat} className="bg-background/50">
+                    <Code2 className="h-4 w-4 mr-2" />
+                    Format
+                  </Button>
+                </div>
               </div>
             </div>
-            <pre className="bg-card p-4 rounded-lg text-sm font-mono overflow-auto max-h-[calc(100vh-200px)] border">
-              {jsonPreview}
-            </pre>
+            <div className="flex-1 p-6">
+              <pre className="bg-card/80 backdrop-blur-sm p-6 rounded-xl text-sm font-mono overflow-auto h-full border shadow-inner">
+                {jsonPreview}
+              </pre>
+            </div>
           </div>
         </div>
       </div>
